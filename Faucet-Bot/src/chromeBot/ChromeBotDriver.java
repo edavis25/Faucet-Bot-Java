@@ -15,8 +15,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ChromeBotDriver {
 
-	static int NUMBER_OF_CLAIMS_DESIRED = 50;
-
 	static ChromeDriver VPNdriver;
 
 	static WebElement randomizeIPButton;
@@ -27,8 +25,8 @@ public class ChromeBotDriver {
 	static ArrayList<String> addressArray = new ArrayList<String>();
 
 	static String referralURL1 = "http://neonbit.cf?ref=3981";
-	
-	
+
+
 	/*
 	 * main() - Login to VPN and randomize IP. For each list in the wallet address array, create a new bot inside of
 	 * 			the botList array list. This array list is then used when creating threads and starting bot's execution.
@@ -100,26 +98,26 @@ public class ChromeBotDriver {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	/*
 	 * readAddressFile() - Read address file into the address array list.
 	 */
 	private static void readAddressFile(ArrayList<String> list) throws FileNotFoundException
 	{
 		File file = new File("./WALLET-ADDRESS-CONFIG.txt");
-		
+
 		Scanner scan = new Scanner(file);
-		
+
 		while (scan.hasNextLine())
 		{
 			list.add(scan.nextLine());
 		}
-		
+
 		scan.close();
 	}
-	
-	
+
+
 	/*
 	 * userPrompt() - Prompt for user input for number of claims each bot should make.
 	 */
@@ -135,14 +133,14 @@ public class ChromeBotDriver {
 				String stringInput = (JOptionPane.showInputDialog("Enter number of claims you want each bot to make:"));
 				// Quit on cancel
 				if (stringInput == null) {System.exit(0);}
-				
+
 				NUMBER_OF_CLAIMS_DESIRED = Integer.parseInt(stringInput);
-				
+
 				if (NUMBER_OF_CLAIMS_DESIRED <= 0)
 				{
 					throw new NumberFormatException();
 				}
-				
+
 				done = true;
 			}
 			catch(NumberFormatException e)
