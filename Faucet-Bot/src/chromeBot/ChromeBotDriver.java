@@ -24,18 +24,18 @@ public class ChromeBotDriver {
 	static ArrayList<ChromeBot> botList = new ArrayList<ChromeBot>();
 
 	// Number of addresses in array determine how many bots will be created. (1 address per bot)
-	static String[] addressArray = {***INSERT ARRAY OF BITCOIN ADDRESSES HERE***};
+	static ArrayList<String> addressArray = new ArrayList<String>();
 
 	static String referralURL1 = "http://neonbit.cf?ref=3981";
-	static String referralURL2 = "http://neonbit.cf?ref=3982";
-
-
+	
+	
 	/*
 	 * main() - Login to VPN and randomize IP. For each list in the wallet address array, create a new bot inside of
 	 * 			the botList array list. This array list is then used when creating threads and starting bot's execution.
 	 */
 	public static void main(String[] args)
 	{
+		readAddressFile(addressArray);
 		userPrompt();
 		vpnLogin();
 		randomizeIP();
@@ -76,7 +76,6 @@ public class ChromeBotDriver {
 		submitButton.click();
 
 		// Cast the randomize ip button for future usage
-		//WebElement randomize = driver.findElement(By.cssSelector("button.btn.btn-default.btn-block"));
 		WebDriverWait ipButtonWait = new WebDriverWait(VPNdriver, 120);
 		ipButtonWait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.btn.btn-default.btn-block")));
 
@@ -91,7 +90,7 @@ public class ChromeBotDriver {
 	{
 		randomizeIPButton.click();
 
-		// 10 second delay to let IP change register
+		// Delay to let IP change register
 		try
 		{
 			Thread.sleep(5000);
@@ -101,9 +100,28 @@ public class ChromeBotDriver {
 			e.printStackTrace();
 		}
 	}
-
+	
+	
 	/*
-	 * userPrompt() -
+	 * readAddressFile() - Read address file into the address array list.
+	 */
+	private static void readAddressFile(ArrayList<String> list) throws FileNotFoundException
+	{
+		File file = new File("./WALLET-ADDRESS-CONFIG.txt");
+		
+		Scanner scan = new Scanner(file);
+		
+		while (scan.hasNextLine())
+		{
+			list.add(scan.nextLine());
+		}
+		
+		scan.close();
+	}
+	
+	
+	/*
+	 * userPrompt() - Prompt for user input for number of claims each bot should make.
 	 */
 	private static void userPrompt()
 	{
@@ -114,12 +132,17 @@ public class ChromeBotDriver {
 		{
 			try
 			{
-				NUMBER_OF_CLAIMS_DESIRED = Integer.parseInt(JOptionPane.showInputDialog("Enter number of claims you want each bot to make:"));
+				String stringInput = (JOptionPane.showInputDialog("Enter number of claims you want each bot to make:"));
+				// Quit on cancel
+				if (stringInput == null) {System.exit(0);}
+				
+				NUMBER_OF_CLAIMS_DESIRED = Integer.parseInt(stringInput);
+				
 				if (NUMBER_OF_CLAIMS_DESIRED <= 0)
 				{
 					throw new NumberFormatException();
 				}
-
+				
 				done = true;
 			}
 			catch(NumberFormatException e)
@@ -128,8 +151,5 @@ public class ChromeBotDriver {
 			}
 
 		}
-
-
 	}
-
 }

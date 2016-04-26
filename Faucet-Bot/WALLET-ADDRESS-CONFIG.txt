@@ -1,0 +1,5 @@
+*** REPLACE ALL TEXT IN THIS FILE WITH BITCOIN WALLET ADDRESSES ***
+
+Note: Delete all text in this document and replace with Bitcoin wallet addresses.
+	Add 1 address per line and do NOT include any extra characters or spaces
+	before or after the address or between any lines.

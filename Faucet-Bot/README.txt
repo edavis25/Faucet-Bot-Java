@@ -10,3 +10,7 @@ User will be prompted with an input dialog box asking for a desired number of cl
 The Google Chrome Driver .exe file has been included in the folder for convenience.
 
 The jar files for Selenium external libraries, etc... can be found in the lib folder.
+
+Wallet addresses must be input into the "WALLET-ADDRESS-CONFIG.txt" file for the program to work.
+Enter each address on its own line (beginning at very first line) and add no extra characters or
+spaces before or after the address or between the file lines.
