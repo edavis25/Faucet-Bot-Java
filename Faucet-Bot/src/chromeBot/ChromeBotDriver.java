@@ -1,6 +1,9 @@
 package chromeBot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
@@ -15,32 +18,35 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ChromeBotDriver {
 
+	static int NUMBER_OF_CLAIMS_DESIRED;
+	
 	static ChromeDriver VPNdriver;
 
 	static WebElement randomizeIPButton;
 
 	static ArrayList<ChromeBot> botList = new ArrayList<ChromeBot>();
 
-	// Number of addresses in array determine how many bots will be created. (1 address per bot)
+	// Number of addresses in array determine how many bots will be created. (1 address per bot, read from "WALLET-ADDRESS-CONFIG.txt" file)
 	static ArrayList<String> addressArray = new ArrayList<String>();
 
 	static String referralURL1 = "http://neonbit.cf?ref=3981";
 
 
 	/*
-	 * main() - Login to VPN and randomize IP. For each list in the wallet address array, create a new bot inside of
-	 * 			the botList array list. This array list is then used when creating threads and starting bot's execution.
+	 * main() - Login to VPN and randomize IP. For each wallet address, create a new bot inside of the botList
+	 * 			 array list. This array list is then used when creating threads and starting bot's execution.
 	 */
-	public static void main(String[] args)
+	public static void main(String[] args) throws FileNotFoundException
 	{
 		readAddressFile(addressArray);
-		userPrompt();
+		NUMBER_OF_CLAIMS_DESIRED = userPrompt();
 		vpnLogin();
 		randomizeIP();
 
-		for (int i = 0, length = addressArray.length; i < length; i++)
+		// For each wallet address given, create a bot to make claims.
+		for (int i = 0, length = addressArray.size(); i < length; i++)
 		{
-			botList.add(new ChromeBot(addressArray[i], referralURL1, NUMBER_OF_CLAIMS_DESIRED));
+			botList.add(new ChromeBot(addressArray.get(i), referralURL1, NUMBER_OF_CLAIMS_DESIRED));
 			Thread thread = new Thread(botList.get(i));
 			thread.start();
 			randomizeIP();
@@ -71,6 +77,7 @@ public class ChromeBotDriver {
 
 		email.sendKeys(***VPN EMAIL***);
 		password.sendKeys(***VPN PASSWORD***);
+		
 		submitButton.click();
 
 		// Cast the randomize ip button for future usage
@@ -121,9 +128,9 @@ public class ChromeBotDriver {
 	/*
 	 * userPrompt() - Prompt for user input for number of claims each bot should make.
 	 */
-	private static void userPrompt()
+	private static int userPrompt()
 	{
-
+		int userInput = 0;
 		Boolean done = false;
 
 		while (!done)
@@ -134,9 +141,9 @@ public class ChromeBotDriver {
 				// Quit on cancel
 				if (stringInput == null) {System.exit(0);}
 
-				NUMBER_OF_CLAIMS_DESIRED = Integer.parseInt(stringInput);
+				userInput = Integer.parseInt(stringInput);
 
-				if (NUMBER_OF_CLAIMS_DESIRED <= 0)
+				if (userInput <= 0)
 				{
 					throw new NumberFormatException();
 				}
@@ -145,9 +152,10 @@ public class ChromeBotDriver {
 			}
 			catch(NumberFormatException e)
 			{
-				JOptionPane.showMessageDialog(null, "Enter only an intger greater than 0");
+				JOptionPane.showMessageDialog(null, "Enter only an intger greater than 0 or cancel to quit.");
 			}
-
 		}
+		
+		return userInput;
 	}
 }
